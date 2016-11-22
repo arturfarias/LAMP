@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin,UserManager
 
+#Classe para criar um usuário personalizado no django
 class User(AbstractBaseUser,PermissionsMixin):
 
     username = models.CharField('Nome de Usuário',max_length=30,unique=True)
@@ -27,4 +28,20 @@ class User(AbstractBaseUser,PermissionsMixin):
     class Meta:
         verbose_name = 'Usuário'
         verbose_name_plural = 'Usuários'
-# Create your models here.
+
+#Classe para o usuário do tipo Professor
+class Professor(models.Model):
+    nome = models.CharField('Nome',max_length=100)
+    email = models.EmailField('E-mail')
+    user = models.ForeignKey(User,verbose_name='Usuário')
+
+    def __str__(self):
+        return self.nome
+
+class Aluno(models.Model):
+    nome = models.CharField('Nome',max_length=100)
+    email = models.EmailField('E-mail')
+    user = models.ForeignKey(User,verbose_name='Usuário')
+
+    def __str__(self):
+        return self.nom
