@@ -1,6 +1,5 @@
 from django.shortcuts import  render, redirect
 from django.http import HttpResponse,HttpResponseRedirect
-
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login
 
@@ -18,4 +17,8 @@ def index(request):
 
 def central(request):
     return HttpResponse("Bem vindo a essa linda pagina em branco.")
+# Create your views here.
+
+def cadastrar(request):
+    return HttpResponse("Bem vindo a essa linda pagina em branco que um dia vai ser uma tela de cadastro.")
 # Create your views here.
