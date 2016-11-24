@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+    Deseja realmente continuar com a operação?
+    <form method="post">{% csrf_token %}
+        <input type="submit" value="Confirmar">
+
+    </form>
+
+    <a href="{% url 'home' %}"><button>Cancelar</button></a>
+
+</body>
+</html>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+    <form method="post">
+        {% csrf_token %}
+
+        {% for aluno in alunos %}
+        <input type="hidden" value="{{ aluno.id }}" name="lista">
+
+        {% endfor %}
+        <input type="submit">
+
+    </form>
+
+    {% for aluno in alunos %}
+        <li>{{ aluno }}</li>
+
+        {% endfor %}
+</body>
+</html>
