@@ -73,7 +73,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'safira.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
@@ -109,18 +108,29 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'pt-br'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Maceio'
 
 USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
-
+USE_TZ = False
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
+LOGIN_URL='/login'
+
+LOGIN_REDIRECT_URL="/"
 
 AUTH_USER_MODEL="autenticar.User"
+
+
+# Configuracao do email
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'avaliacao.em.pares@gmail.com'
+EMAIL_HOST_PASSWORD = 'Avpares2014'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'luciocorreia.allan@gmail.com'
