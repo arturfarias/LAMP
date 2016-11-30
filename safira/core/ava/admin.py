@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from django.contrib import admin
-from core.ava.models import *
+from ..ava.models import *
 
 class adminAluno(admin.ModelAdmin):
     model=Aluno

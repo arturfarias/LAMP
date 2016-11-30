@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from core.config.models import *
+from ..config.models import *
 
 
 class RodapeInline(admin.StackedInline):

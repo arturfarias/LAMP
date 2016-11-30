@@ -1,6 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from core.ava.models import *
+from ..ava.models import *
 from django.forms.widgets import TextInput
 
 

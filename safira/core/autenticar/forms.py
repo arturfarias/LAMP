@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
-from core.autenticar.models import User
+from ..autenticar.models import User
 
 
 class RegistrationForm(forms.ModelForm):

@@ -4,16 +4,16 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.core.urlresolvers import reverse
 from django.shortcuts import render, redirect
-from core.ava.decorators import is_professor
+from ..ava.decorators import is_professor
 
-from core.ava.forms import RegistrarAluno
+from ..ava.forms import RegistrarAluno
 
 
 
 
 
 #Chama a pagina index, que possui dois formulario, o de login e o de cadastro.
-from core.ava.models import AlunoDisciplina
+from ..ava.models import AlunoDisciplina
 
 
 def index(request,sucesso=2):

@@ -11,7 +11,7 @@ from django.contrib.auth.models import Permission
 from django.db import models
 from django.db.models.signals import pre_save
 from django.dispatch.dispatcher import receiver
-from core.autenticar.models import User
+from ..autenticar.models import User
 
 
 #Modelo do professor, contendo todos os seus atributos

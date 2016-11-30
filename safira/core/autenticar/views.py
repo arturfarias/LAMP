@@ -14,10 +14,10 @@ from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.http.response import HttpResponseRedirect, HttpResponse
 
-from core.autenticar.forms import RegistrationForm
-from core.ava.models import Aluno
-from core.config.views import index
-from core.ava.forms import RegistrarAluno
+from ..autenticar.forms import RegistrationForm
+from ..ava.models import Aluno
+from ..config.views import index
+from ..ava.forms import RegistrarAluno
 
 
 

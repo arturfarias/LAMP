@@ -1,5 +1,5 @@
 from django.conf.urls import include, url
-from core.autenticar.views import *
+from ..autenticar.views import *
 from django.contrib.auth.views import password_change_done,logout
 
 urlpatterns = [

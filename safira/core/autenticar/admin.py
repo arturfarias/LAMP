@@ -6,8 +6,8 @@ from django.contrib.auth.forms import (AdminPasswordChangeForm)
 from django.utils.translation import ugettext_lazy as _
 
 
-from core.autenticar.forms import RegistrationForm, UserChangeForm
-from core.autenticar.models import User
+from ..autenticar.forms import RegistrationForm, UserChangeForm
+from ..autenticar.models import User
 
 
 class MyUserAdmin(UserAdmin):

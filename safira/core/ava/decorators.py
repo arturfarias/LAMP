@@ -6,7 +6,7 @@ from django.http.response import Http404
 
 
 # Decorator serve como validador de view, ele faz verificacoes que podem proibir ou nao a execucao de uma pagina.
-from core.ava.models import Disciplina
+from ..ava.models import Disciplina
 from django.contrib.auth.decorators import user_passes_test
 from django.core.exceptions import PermissionDenied
 
