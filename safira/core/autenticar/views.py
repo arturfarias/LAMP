@@ -73,20 +73,20 @@ def registrar(request):
                 user.save()
 
                 #Gerando uma chave para ativar o email
-                #salt=hashlib.sha1(str(random.random())).hexdigest()[:5]
-                #activation_key=hashlib.sha1(salt+user.email).hexdigest()
-                #key_expires=datetime.datetime.now()
+                salt=hashlib.sha1(str(random.random()).encode('utf-8')).hexdigest()[:5]
+                activation_key=hashlib.sha1(str(salt+user.email).encode('utf‌​-8')).hexdigest()
+                key_expires=datetime.datetime.now()
 
-                #aluno.usuario=user
-                #aluno.chave_de_ativacao=activation_key
-                #aluno.chave_expira=key_expires
+                aluno.usuario=user
+                aluno.chave_de_ativacao=activation_key
+                aluno.chave_expira=key_expires
 
                 #Corpo do Email
-                #email_assunto="Peer Assesment - Confirmação de cadastro"
-                #link=reverse(viewname='ativar_conta',kwargs={'codigo':activation_key})
-                #email_corpo="http://"+request.get_host()+link
-                #aluno.save()
-                #send_mail(email_assunto,email_corpo,user.email,[user.email],fail_silently=False)
+                email_assunto="Peer Assesment - Confirmação de cadastro"
+                link=reverse(viewname='ativar_conta',kwargs={'codigo':activation_key})
+                email_corpo="http://"+request.get_host()+link
+                aluno.save()
+                send_mail(email_assunto,email_corpo,user.email,[user.email],fail_silently=False)
 
 
 
