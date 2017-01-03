@@ -13,7 +13,6 @@ from django.db.models.signals import pre_save
 from django.dispatch.dispatcher import receiver
 from ..autenticar.models import User
 
-
 #Modelo do professor, contendo todos os seus atributos
 class Professor(models.Model):
     class Meta:
@@ -23,9 +22,6 @@ class Professor(models.Model):
     user= models.OneToOneField(User)
     def __str__(self):
         return self.nome
-
-
-
 
 #Modelo de aluno, contendo seus atributos e sua permissão.
 class Aluno(models.Model):
@@ -70,7 +66,6 @@ class AlunoDisciplina(models.Model):
     def get_absolute_url(self):
         return reverse(viewname='detalhe_disciplinas',kwargs={'slug':self.slug})
 
-
 ## Atividades ##
 
 class Atividades(models.Model):
@@ -78,9 +73,6 @@ class Atividades(models.Model):
     titulo=models.CharField(max_length=30)
     arquivo=models.FileField(upload_to='atividades/arquivos/atividades')
     disciplina=models.ForeignKey('Disciplina')
-
-
-
 
 #Disciplinas#
 
@@ -93,18 +85,6 @@ class Disciplina(models.Model):
 
     def __str__(self):
         return self.nome
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 ##  ALUNO  ##
@@ -172,8 +152,6 @@ def handler_slug_atividade(sender,instance,**kwargs):
 @receiver(pre_delete,sender=Atividades)
 def handler_delete_file_atividade(sender,instance,**kwargs):
     instance.arquivo.delete()
-
-
 
 ## Disciplina ##
 

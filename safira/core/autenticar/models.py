@@ -2,12 +2,8 @@ from django.contrib import auth
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin, Group, Permission, \
     _user_has_perm, _user_get_all_permissions, _user_has_module_perms
 from django.core.mail import send_mail
-
 from django.db import models
-
-
 from django.utils import timezone
-
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.csrf import csrf_protect
@@ -15,7 +11,6 @@ from django.views.decorators.debug import sensitive_post_parameters
 
 csrf_protect_m = method_decorator(csrf_protect)
 sensitive_post_parameters_m = method_decorator(sensitive_post_parameters())
-
 
 class UserManager(BaseUserManager):
 
@@ -43,8 +38,6 @@ class UserManager(BaseUserManager):
     def create_superuser(self,email, password, **extra_fields):
         return self._create_user(email, password, True, True,
                                  **extra_fields)
-
-
 
 class PermissaoMix(models.Model):
     """
@@ -138,8 +131,6 @@ class AbstractUser(AbstractBaseUser, PermissaoMix):
 
     date_joined = models.DateTimeField(_('Criacao da conta'), default=timezone.now)
 
-
-
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
@@ -164,7 +155,6 @@ class AbstractUser(AbstractBaseUser, PermissaoMix):
         """
         send_mail(subject, message, from_email, [self.email], **kwargs)
 
-
 class User(AbstractUser):
     """
     Users within the Django authentication system are represented by this
@@ -174,6 +164,3 @@ class User(AbstractUser):
     """
     class Meta(AbstractUser.Meta):
         swappable = 'AUTH_USER_MODEL'
-
-
-

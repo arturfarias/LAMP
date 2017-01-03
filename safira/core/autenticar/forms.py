@@ -1,8 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
-
 from ..autenticar.models import User
-
 
 class RegistrationForm(forms.ModelForm):
     """
@@ -36,7 +34,6 @@ class RegistrationForm(forms.ModelForm):
         if commit:
             user.save()
         return user
-
 
 class UserChangeForm(forms.ModelForm):
     """A form for updating users. Includes all the fields on

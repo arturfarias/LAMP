@@ -1,4 +1,3 @@
-# # -*- coding: utf-8 -*-
 from django.core.exceptions import ValidationError
 
 
@@ -15,4 +14,3 @@ def valida_QuantidadeRodape(value):
     if len(Rodape.objects.filter(configuracoes_Sistema=1)) > Configuracoes_Sistema.objects.get(pk=1).elementos_rodape:
 
         raise ValidationError("Você inseriu mais elementos que o configurado, altere a quantidade ou remova algum elemento do rodapé para continuar inserindo!")
-

@@ -1,8 +1,6 @@
-
 import hashlib
 import random
 import datetime
-
 from django.contrib.auth import update_session_auth_hash, login
 from django.contrib.auth.forms import PasswordChangeForm, AuthenticationForm
 from django.core.urlresolvers import reverse
@@ -13,13 +11,10 @@ from django.views.decorators.debug import sensitive_post_parameters
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.http.response import HttpResponseRedirect, HttpResponse
-
 from ..autenticar.forms import RegistrationForm
 from ..ava.models import Aluno
 from ..config.views import index
 from ..ava.forms import RegistrarAluno
-
-
 
 @sensitive_post_parameters()
 @csrf_protect
@@ -40,27 +35,19 @@ def mudar_senha(request):
 
     return HttpResponseRedirect(reverse(viewname='atualiza_perfil'))
 
-
-
 #Dados Username e Password corretos o usurário conseguirá logar normalmente
 def logar(request):
 
-
     if request.method=='POST':
-
-
         form=AuthenticationForm(data=request.POST)
-
         if form.is_valid():
             login(request,form.get_user())
             return redirect(reverse(viewname='home'))
-
     return index(request,False)
 
 #Função que cria um novo aluno quando recebe uma requisição post
 #Cadastro com Nome, Email e Senha
 def registrar(request):
-
     if request.method=='POST':
         form=RegistrarAluno(request.POST)
         user_form=RegistrationForm(request.POST)
@@ -88,18 +75,9 @@ def registrar(request):
                 aluno.save()
                 send_mail(email_assunto,email_corpo,user.email,[user.email],fail_silently=False)
 
-
-
-
-
-
                 return index(request,sucesso=True)
 
-
     return index(request,sucesso=False)
-
-
-
 
 def ativar_conta(request,codigo):
     aluno=get_object_or_404(Aluno,chave_de_ativacao=codigo)

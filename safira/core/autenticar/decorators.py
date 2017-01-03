@@ -1,8 +1,5 @@
 from functools import wraps
-
 from django.http.response import Http404
-
-
 
 # Decorator serve como validador de view, ele faz verificacoes que podem proibir ou nao a execucao de uma pagina.
 def matriculado(view):
@@ -18,7 +15,6 @@ def matriculado(view):
             raise Http404
         return view(request, *args,**kwargs)
     return wrapp
-
 
 def matriculado_disc(view):
     @wraps(view)

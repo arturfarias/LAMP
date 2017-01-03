@@ -1,15 +1,10 @@
-#encoding: utf-8
 from functools import wraps
-
 from django.http.response import Http404
-
-
-
-# Decorator serve como validador de view, ele faz verificacoes que podem proibir ou nao a execucao de uma pagina.
 from ..ava.models import Disciplina
 from django.contrib.auth.decorators import user_passes_test
 from django.core.exceptions import PermissionDenied
-
+from django.contrib.auth.decorators import user_passes_test
+from django.core.exceptions import PermissionDenied
 __author__ = 'allan'
 
 
@@ -36,13 +31,6 @@ def is_aluno(login_url=None, raise_exception=False):
         # As the last resort, show the login form
         return False
     return user_passes_test(check_perms, login_url=login_url)
-
-
-from django.contrib.auth.decorators import user_passes_test
-from django.core.exceptions import PermissionDenied
-
-
-
 
 def is_professor(login_url=None, raise_exception=False):
     perm='ava.view_professor'
