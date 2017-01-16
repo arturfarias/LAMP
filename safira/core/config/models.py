@@ -11,7 +11,7 @@ class Configuracoes_Sistema(models.Model):
     bloquear_criacao=models.BooleanField(default=True,unique=True,editable=False)
     titulo_pagInicial=models.CharField(default="Texto Padrão",max_length=30)
     subTitulo_pagInicial=models.CharField(default="Altere-o através da interface de ADMIN",max_length=40)
-    elementos_rodape=models.IntegerField(default=10,max_length=2,validators=[validar_quantidadeElementosRodape])
+    elementos_rodape=models.IntegerField(default=10,validators=[validar_quantidadeElementosRodape])
     icone=models.ImageField(blank=True,upload_to="imagens/icone")
 
 

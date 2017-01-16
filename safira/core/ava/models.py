@@ -35,7 +35,7 @@ class Aluno(models.Model):
     disciplinas=models.ManyToManyField('Disciplina',through='AlunoDisciplina',blank=True)
     usuario=models.OneToOneField(User,verbose_name="Usuário/Email",)
     chave_de_ativacao=models.CharField(max_length=40,blank=True,null=True)
-    chave_expira=models.DateTimeField(default=timezone.now(),blank=True)
+    chave_expira=models.DateTimeField(default=timezone.now,blank=True)
 
     def __str__(self):
 
