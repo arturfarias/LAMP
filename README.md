@@ -4,6 +4,7 @@
 ### Depêndencias ###
 
 * Python 3.5.2
-* pip3 install Django==1.10.3
-* pip3 install django-bootstrap3
-* pip3 install django-bootstrap-form
+* pip install Django==1.10.3
+* pip install django-bootstrap3
+* pip install django-bootstrap-form
+* pip install Pillow
