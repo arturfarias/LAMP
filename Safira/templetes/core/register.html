@@ -1,0 +1,8 @@
+{% load bootstrap %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+ <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<form class="form" method="post">
+{% csrf_token %} <!-- Tag de segurança do django não a remova /!-->
+{{ form | bootstrap }} <!-- Tag para gerar o formulario /!-->
+ <button type="submit" >Cadastrar</button>
+</form>

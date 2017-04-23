@@ -40,6 +40,9 @@ class Turma(models.Model):
 class AlunosMatriculados(models.Model):
     aluno = models.ForeignKey('Aluno',verbose_name="Aluno")
     turma = models.ForeignKey('Turma',verbose_name="Turma")
+    semestre = models.CharField('Semestre',max_length=7)
+    class Meta:
+        unique_together = (("aluno", "turma","semestre"),)
 
     def __str__(self):
-        return "Aluno: " + self.aluno.nome + " " +  "(" + self.Turma.nome + ")"
+        return "Aluno: " + self.aluno.nome + " " +  "(" + self.turma.nome + ")"
