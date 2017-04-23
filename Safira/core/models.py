@@ -1,7 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.dispatch.dispatcher import receiver
+from django.db.models.signals import pre_save
+from django.contrib.auth.models import Permission
 
 class Professor(models.Model):
+    class Meta:
+        permissions=(("view_professor",'can_view_professor'),)
+
     usuario = models.OneToOneField(User,verbose_name="Usuário")
     nome = models.CharField('Nome',max_length=50)
     email = models.EmailField('E-mail')
@@ -11,6 +17,9 @@ class Professor(models.Model):
         return self.nome
 
 class Aluno(models.Model):
+    class Meta:
+        permissions=(("view_aluno",'can_view_aluno'),)
+
     usuario = models.OneToOneField(User,verbose_name="Usuário")
     nome = models.CharField('Nome',max_length=50)
     email = models.EmailField('E-mail')
@@ -46,3 +55,15 @@ class AlunosMatriculados(models.Model):
 
     def __str__(self):
         return "Aluno: " + self.aluno.nome + " " +  "(" + self.turma.nome + ")"
+
+@receiver(pre_save,sender=Aluno)
+def handler_permissao_aluno(sender,instance,**kwargs):
+    permission = Permission.objects.get(codename='view_aluno')
+    User=instance.usuario
+    User.user_permissions.add(permission)
+
+@receiver(pre_save,sender=Professor)
+def handler_permissao_professor(sender,instance,**kwargs):
+    permission = Permission.objects.get(codename='view_professor')
+    user=instance.usuario
+    user.user_permissions.add(permission)
