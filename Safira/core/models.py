@@ -43,6 +43,8 @@ class Turma(models.Model):
     professor = models.ForeignKey('Professor',verbose_name="Professor")
     disciplina = models.ForeignKey('Disciplina',verbose_name="Disciplina")
     semestre = models.CharField('Semestre',max_length=7)
+    class Meta:
+        unique_together = (("nome", "disciplina","semestre"),)
 
     def __str__(self):
         return "Turma: " + self.nome + " " +  "(" + self.disciplina.nome + ")"
@@ -50,9 +52,8 @@ class Turma(models.Model):
 class AlunosMatriculados(models.Model):
     aluno = models.ForeignKey('Aluno',verbose_name="Aluno")
     turma = models.ForeignKey('Turma',verbose_name="Turma")
-    semestre = models.CharField('Semestre',max_length=7)
     class Meta:
-        unique_together = (("aluno", "turma","semestre"),)
+        unique_together = (("aluno", "turma"),)
 
     def __str__(self):
         return "Aluno: " + self.aluno.nome + " " +  "(" + self.turma.nome + ")"

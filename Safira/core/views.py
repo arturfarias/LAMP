@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import RegisterForm
 from .decorators import  is_aluno,is_professor
 from .models import AlunosMatriculados
+from .models import Aluno
 
 def index(request):
     if request.method == 'POST':
@@ -44,7 +45,8 @@ def register(request):
 @is_aluno()
 @login_required
 def Aluno_disciplina(request):
-    disciplinafiltro = AlunosMatriculados.objects.filter(aluno=request.user.id)
+    aluno = Aluno.objects.get(usuario=request.user)
+    disciplinafiltro = AlunosMatriculados.objects.filter(aluno_id=aluno)
     paginator = Paginator(disciplinafiltro, 10)
 
     try:
