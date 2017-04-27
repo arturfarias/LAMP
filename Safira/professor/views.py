@@ -5,4 +5,4 @@ from core.decorators import  is_aluno,is_professor
 @is_professor()
 @login_required
 def professor(request):
-    return render(request,"core/professor.html")
+    return render(request,"professor/professor.html")
