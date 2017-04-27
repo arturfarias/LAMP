@@ -4,9 +4,11 @@ from django.contrib.auth import login
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
+from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.contrib.auth.decorators import login_required
 from .forms import RegisterForm
 from .decorators import  is_aluno,is_professor
+from .models import AlunosMatriculados
 
 def index(request):
     if request.method == 'POST':
@@ -38,3 +40,21 @@ def register(request):
     else:
         form = RegisterForm()
     return render (request,"core/register.html",{"form": form})
+
+@is_aluno()
+@login_required
+def Aluno_disciplina(request):
+    disciplinafiltro = AlunosMatriculados.objects.filter(aluno=request.user.id)
+    paginator = Paginator(disciplinafiltro, 10)
+
+    try:
+        page = int(request.GET.get('page', '1'))
+    except ValueError:
+        page = 1
+
+    try:
+        disciplinas = paginator.page(page)
+    except (EmptyPage, InvalidPage):
+        disciplinas = paginator.page(paginator.num_pages)
+
+    return render(request,"core/minhas_disciplinas.html",{'disciplinas':disciplinas})
