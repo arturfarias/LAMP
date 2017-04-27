@@ -38,12 +38,3 @@ def register(request):
     else:
         form = RegisterForm()
     return render (request,"core/register.html",{"form": form})
-@is_aluno()
-@login_required
-def aluno(request):
-    return render(request,"core/aluno.html")
-
-@is_professor()
-@login_required
-def professor(request):
-    return render(request,"core/professor.html")

@@ -24,7 +24,7 @@ class Aluno(models.Model):
     usuario = models.OneToOneField(User,verbose_name="Usuário")
     nome = models.CharField('Nome',max_length=50)
     email = models.EmailField('E-mail')
-    matricula = models.CharField('Matricula',max_length=8,unique=True)
+    matricula = models.CharField('Matricula',max_length=8)
     turma=models.ManyToManyField('Turma',through='AlunosMatriculados',blank=True)
     sobre = models.CharField('Sobre',max_length=120)
 
@@ -70,7 +70,7 @@ def handler_permissao_professor(sender,instance,**kwargs):
     user.user_permissions.add(permission)
 
 def cria_user_aluno(sender, instance, created, **kwargs):
-    if created:
+    if created and not User.is_staff :
         Aluno.objects.create(usuario=instance,email=instance.email)
 
 post_save.connect(cria_user_aluno, sender=User)
