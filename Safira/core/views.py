@@ -45,7 +45,7 @@ def register(request):
 @login_required
 def Aluno_disciplina(request):
     aluno = Aluno.objects.get(usuario=request.user)
-    disciplinafiltro = AlunosMatriculados.objects.filter(aluno_id=aluno).order_by('turma')
+    disciplinafiltro = AlunosMatriculados.objects.filter(aluno_id=aluno,pendencia = False).order_by('turma')
     paginator = Paginator(disciplinafiltro, 10)
 
     try:

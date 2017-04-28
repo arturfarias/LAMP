@@ -52,6 +52,7 @@ class Turma(models.Model):
 class AlunosMatriculados(models.Model):
     aluno = models.ForeignKey('Aluno',verbose_name="Aluno")
     turma = models.ForeignKey('Turma',verbose_name="Turma")
+    pendencia = models.BooleanField('Falta Aprovação',default=True)
     class Meta:
         unique_together = (("aluno", "turma"),)
 
