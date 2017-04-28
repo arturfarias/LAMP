@@ -8,8 +8,7 @@ from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.contrib.auth.decorators import login_required
 from .forms import RegisterForm
 from .decorators import  is_aluno,is_professor
-from .models import AlunosMatriculados
-from .models import Aluno
+from .models import AlunosMatriculados,Aluno,Disciplina,Turma
 
 def index(request):
     if request.method == 'POST':
@@ -46,7 +45,7 @@ def register(request):
 @login_required
 def Aluno_disciplina(request):
     aluno = Aluno.objects.get(usuario=request.user)
-    disciplinafiltro = AlunosMatriculados.objects.filter(aluno_id=aluno)
+    disciplinafiltro = AlunosMatriculados.objects.filter(aluno_id=aluno).order_by('turma')
     paginator = Paginator(disciplinafiltro, 10)
 
     try:
@@ -60,3 +59,24 @@ def Aluno_disciplina(request):
         disciplinas = paginator.page(paginator.num_pages)
 
     return render(request,"core/minhas_disciplinas.html",{'disciplinas':disciplinas})
+
+@is_aluno()
+@login_required
+def All_disciplinas(request):
+    lista_disciplinas = Disciplina.objects.all().order_by('nome')
+    turmas = Turma.objects.all().order_by('semestre')
+    paginator = Paginator(lista_disciplinas, 5)
+
+    try:
+        page = int(request.GET.get('page', '1'))
+    except ValueError:
+        page = 1
+
+    try:
+        dis = paginator.page(page)
+    except (EmptyPage, InvalidPage):
+        dis = paginator.page(paginator.num_pages)
+
+
+
+    return render(request, "core/disciplinas.html",{'dis':dis,'turmas':turmas})
