@@ -25,7 +25,11 @@
     <td>{{turma.nome}}</td>
     <td>{{turma.professor}}</td>
     <td>{{turma.semestre}}</td>
-    <td><button type="button" class="btn btn-default">Participar</button>
+		<form method="POST" class="post-form">
+		{% csrf_token %}
+		{{ form.as_p }}
+	  <td><button name="id_turma" value="{{turma.pk}}" type="submit" class="save btn btn-default">Participar</button>
+		</form>
     </td>
 </tr>
 {% endif %}

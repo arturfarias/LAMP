@@ -6,7 +6,7 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.contrib.auth.decorators import login_required
-from .forms import RegisterForm
+from .forms import RegisterForm, MatriculaForm
 from .decorators import  is_aluno,is_professor
 from .models import AlunosMatriculados,Aluno,Disciplina,Turma
 
@@ -63,6 +63,7 @@ def Aluno_disciplina(request):
 @is_aluno()
 @login_required
 def All_disciplinas(request):
+    aluno = Aluno.objects.get(usuario=request.user)
     lista_disciplinas = Disciplina.objects.all().order_by('nome')
     turmas = Turma.objects.all().order_by('semestre')
     paginator = Paginator(lista_disciplinas, 5)
@@ -77,6 +78,14 @@ def All_disciplinas(request):
     except (EmptyPage, InvalidPage):
         dis = paginator.page(paginator.num_pages)
 
-
+    if request.method == 'POST':
+        form = MatriculaForm(request.POST)
+        if form.is_valid():
+            form = form.save(commit=False)
+            form.aluno = aluno
+            form.turma = Turma.objects.get(id=request.POST.get("id_turma"))
+            form.save()
+        else:
+            return render(request, "core/disciplinas.html",{'dis':dis,'turmas':turmas})
 
     return render(request, "core/disciplinas.html",{'dis':dis,'turmas':turmas})
