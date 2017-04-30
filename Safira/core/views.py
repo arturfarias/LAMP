@@ -80,12 +80,9 @@ def All_disciplinas(request):
 
     if request.method == 'POST':
         form = MatriculaForm(request.POST)
-        if form.is_valid():
-            form = form.save(commit=False)
-            form.aluno = aluno
-            form.turma = Turma.objects.get(id=request.POST.get("id_turma"))
-            form.save()
-        else:
-            return render(request, "core/disciplinas.html",{'dis':dis,'turmas':turmas})
+        form = form.save(commit=False)
+        form.aluno = aluno
+        form.turma = Turma.objects.get(id=request.POST.get("id_turma"))
+        form.save()
 
     return render(request, "core/disciplinas.html",{'dis':dis,'turmas':turmas})
