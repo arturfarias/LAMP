@@ -34,7 +34,7 @@ class Aluno(models.Model):
 class Disciplina(models.Model):
     nome = models.CharField('Nome',max_length=50)
     descricao = models.TextField('Descrição')
-
+    creator = models.ForeignKey(User,verbose_name="Criador",blank=True)
     def __str__(self):
         return self.nome
 

@@ -86,3 +86,19 @@ def All_disciplinas(request):
         form.save()
 
     return render(request, "core/disciplinas.html",{'dis':dis,'turmas':turmas})
+
+
+def Professor_disciplina(request):
+    disciplinafiltro = Disciplina.objects.filter(creator=request.user).order_by('nome')
+    paginator = Paginator(disciplinafiltro, 5)
+
+    try:
+        page = int(request.GET.get('page', '1'))
+    except ValueError:
+        page = 1
+
+    try:
+        disciplinas = paginator.page(page)
+    except (EmptyPage, InvalidPage):
+        disciplinas = paginator.page(paginator.num_pages)
+    return render(request,"core/professor_disciplinas.html",{'disciplinas':disciplinas})
