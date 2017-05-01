@@ -2,7 +2,7 @@
 {% load staticfiles %}
 
 {% block content %}
-<button type="button" class="btn btn-success">Criar nova </button>
+<a href="{%url 'criar_disciplina'%}"><button type="button" class="btn btn-success">Criar nova </button></a>
 <div class="container">
 	<div class="row">
 		<div class="span5">
@@ -19,8 +19,8 @@
                 <tr>
                     <td>{{disciplina.nome}}</td>
                     <td>{{disciplina.descricao}}</td>
-                    <td><button type="button" class="btn btn-success">Editar</button>
-										<button type="button" class="btn btn-danger">Excluir</button>
+                    <td><a href="{%url 'update_disciplina' disciplina.pk %}"><button type="button" class="btn btn-success">Editar</button></a>
+										<a href="{%url 'delete_disciplina' disciplina.id %}"><button type="button" class="btn btn-danger">Excluir</button></a>
                     </td>
                 </tr>
 {% endfor %}

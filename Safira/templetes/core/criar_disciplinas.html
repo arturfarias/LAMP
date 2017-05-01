@@ -1,0 +1,10 @@
+{% extends 'base/base_professor.html' %}
+{% load staticfiles %}
+{% load bootstrap %}
+{% block content %}
+<form class="form" method="post">
+{% csrf_token %} <!-- Tag de segurança do django não a remova /!-->
+{{ form | bootstrap }} <!-- Tag para gerar o formulario /!-->
+ <button type="submit" >Cadastrar</button>
+</form>
+{% endblock content %}

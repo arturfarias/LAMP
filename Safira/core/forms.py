@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import AlunosMatriculados
+from .models import AlunosMatriculados,Disciplina
 
 class RegisterForm(UserCreationForm):
     username = forms.CharField(label='Nome')
@@ -15,3 +15,8 @@ class MatriculaForm(forms.ModelForm):
     class Meta:
         model = AlunosMatriculados
         fields = ()
+
+class DisciplinaForms(forms.ModelForm):
+    class Meta:
+        model = Disciplina
+        exclude =['creator']

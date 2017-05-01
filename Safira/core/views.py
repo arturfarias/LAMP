@@ -6,7 +6,7 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.contrib.auth.decorators import login_required
-from .forms import RegisterForm, MatriculaForm
+from .forms import RegisterForm, MatriculaForm,DisciplinaForms
 from .decorators import  is_aluno,is_professor
 from .models import AlunosMatriculados,Aluno,Disciplina,Turma
 
@@ -87,7 +87,8 @@ def All_disciplinas(request):
 
     return render(request, "core/disciplinas.html",{'dis':dis,'turmas':turmas})
 
-
+@is_professor()
+@login_required
 def Professor_disciplina(request):
     disciplinafiltro = Disciplina.objects.filter(creator=request.user).order_by('nome')
     paginator = Paginator(disciplinafiltro, 5)
@@ -102,3 +103,36 @@ def Professor_disciplina(request):
     except (EmptyPage, InvalidPage):
         disciplinas = paginator.page(paginator.num_pages)
     return render(request,"core/professor_disciplinas.html",{'disciplinas':disciplinas})
+
+@is_professor()
+@login_required
+def criar_disciplina(request):
+    form = DisciplinaForms(request.POST or None)
+
+    if form.is_valid():
+        form = form.save(commit=False)
+        form.creator = request.user
+        form.save()
+        return redirect(reverse('Professor_disciplina'))
+    return render(request,"core/criar_disciplinas.html",{'form':form})
+
+@is_professor()
+@login_required
+def update_disciplina(request,pk):
+    disciplina = Disciplina.objects.get(pk=pk)
+    form = DisciplinaForms(request.POST or None, instance=disciplina)
+    if form.is_valid():
+        form = form.save(commit=False)
+        form.creator = request.user
+        form.save()
+        return redirect(reverse('Professor_disciplina'))
+    return render(request,"core/criar_disciplinas.html",{'object':disciplina,'form':form})
+
+def delete_disciplina(request,pk):
+    disciplina = Disciplina.objects.get(pk=pk)
+
+    if request.method == 'POST':
+        form = DisciplinaForms(request.POST or None,instance=disciplina)
+        disciplina.delete()
+        return redirect(reverse('Professor_disciplina'))
+    return render(request,"core/deletar_disciplinas.html",{'object':disciplina})
