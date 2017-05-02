@@ -194,4 +194,39 @@ def delete_turma(request,pk):
 
 def ver_turmas(request, pk):
     turma = Turma.objects.get(pk=pk)
-    return render(request,"core/ver_turmas.html",{'turma':turma})
+    alunosfiltro = AlunosMatriculados.objects.filter(turma = pk,pendencia = False).order_by('turma')
+    paginator = Paginator(alunosfiltro, 10)
+
+    try:
+        page = int(request.GET.get('page', '1'))
+    except ValueError:
+        page = 1
+
+    try:
+        alunos = paginator.page(page)
+    except (EmptyPage, InvalidPage):
+        alunos = paginator.page(paginator.num_pages)
+
+
+    alunossolicitacao = AlunosMatriculados.objects.filter(turma = pk,pendencia = True).order_by('turma')
+    paginator = Paginator(alunossolicitacao, 10)
+
+    try:
+        page = int(request.GET.get('page', '1'))
+    except ValueError:
+        page = 1
+
+    try:
+        alunossolis = paginator.page(page)
+    except (EmptyPage, InvalidPage):
+        alunossolis = paginator.page(paginator.num_pages)
+
+
+    if request.method == 'POST':
+        aluno = AlunosMatriculados.objects.get(id=request.POST.get("id_aluno"))
+        form = MatriculaForm(request.POST or None, instance=aluno)
+        form = form.save(commit=False)
+        form.pendencia = False
+        form.save()
+
+    return render(request,"core/ver_turmas.html",{'turma':turma,'alunos':alunos,'alunossolis':alunossolis})
