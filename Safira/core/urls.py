@@ -10,7 +10,12 @@ urlpatterns = [
     url(r'safira/aluno/$', views.Aluno_disciplina, name='Aluno_disciplina'),
     url(r'safira/professor/$', views.Professor_disciplina, name='Professor_disciplina'),
     url(r'safira/aluno/disciplinas/$', views.All_disciplinas, name='All_disciplinas'),
+    url(r'safira/professor/turmas/$', views.professor_turma, name='professor_turma'),
+    url(r'safira/professor/turma/criar/$', views.criar_turma, name='criar_turma'),
     url(r'safira/professor/criar/$', views.criar_disciplina, name='criar_disciplina'),
     url(r'safira/professor/editar/(?P<pk>\d+)/$', views.update_disciplina, name='update_disciplina'),
-    url(r'safira/professor/deletar(?P<pk>\d+)/$', views.delete_disciplina, name='delete_disciplina'),
+    url(r'safira/professor/turma/editar/(?P<pk>\d+)/$', views.update_turma, name='update_turma'),
+    url(r'safira/professor/deletar/disciplina/(?P<pk>\d+)/$', views.delete_disciplina, name='delete_disciplina'),
+    url(r'safira/professor/turma/deletar/(?P<pk>\d+)/$', views.delete_turma, name='delete_turma'),
+    url(r'safira/professor/turma/ver/(?P<pk>\d+)/$', views.ver_turmas, name='ver_turmas'),
 ]

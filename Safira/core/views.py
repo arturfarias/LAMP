@@ -6,9 +6,9 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.contrib.auth.decorators import login_required
-from .forms import RegisterForm, MatriculaForm,DisciplinaForms
+from .forms import RegisterForm, MatriculaForm,DisciplinaForms,Turmaforms
 from .decorators import  is_aluno,is_professor
-from .models import AlunosMatriculados,Aluno,Disciplina,Turma
+from .models import AlunosMatriculados,Aluno,Disciplina,Turma,Professor
 
 def index(request):
     if request.method == 'POST':
@@ -128,6 +128,8 @@ def update_disciplina(request,pk):
         return redirect(reverse('Professor_disciplina'))
     return render(request,"core/criar_disciplinas.html",{'object':disciplina,'form':form})
 
+@is_professor()
+@login_required
 def delete_disciplina(request,pk):
     disciplina = Disciplina.objects.get(pk=pk)
 
@@ -136,3 +138,60 @@ def delete_disciplina(request,pk):
         disciplina.delete()
         return redirect(reverse('Professor_disciplina'))
     return render(request,"core/deletar_disciplinas.html",{'object':disciplina})
+
+@is_professor()
+@login_required
+def professor_turma(request):
+    professor = Professor.objects.get(usuario=request.user)
+    turmas = Turma.objects.filter(professor_id=professor).order_by('nome')
+    paginator = Paginator(turmas, 5)
+
+    try:
+        page = int(request.GET.get('page', '1'))
+    except ValueError:
+        page = 1
+
+    try:
+        turmas = paginator.page(page)
+    except (EmptyPage, InvalidPage):
+        turmas = paginator.page(paginator.num_pages)
+    return render(request,"core/professor_turmas.html",{'turmas':turmas})
+
+@is_professor()
+@login_required
+def criar_turma(request):
+    form = Turmaforms(request.POST or None)
+
+    if form.is_valid():
+        form = form.save(commit=False)
+        form.professor = Professor.objects.get(usuario=request.user)
+        form.save()
+        return redirect(reverse('professor_turma'))
+    return render(request,"core/criar_turma.html",{'form':form})
+
+@is_professor()
+@login_required
+def update_turma(request,pk):
+    turma = Turma.objects.get(pk=pk)
+    form = Turmaforms(request.POST or None, instance=turma)
+    if form.is_valid():
+        form = form.save(commit=False)
+        form.professor = Professor.objects.get(usuario=request.user)
+        form.save()
+        return redirect(reverse('professor_turma'))
+    return render(request,"core/criar_turma.html",{'object':turma,'form':form})
+
+@is_professor()
+@login_required
+def delete_turma(request,pk):
+    turma = Turma.objects.get(pk=pk)
+
+    if request.method == 'POST':
+        form = Turmaforms(request.POST or None,instance=turma)
+        turma.delete()
+        return redirect(reverse('professor_turma'))
+    return render(request,"core/deletar_turmas.html",{'object':turma})
+
+def ver_turmas(request, pk):
+    turma = Turma.objects.get(pk=pk)
+    return render(request,"core/ver_turmas.html",{'turma':turma})
