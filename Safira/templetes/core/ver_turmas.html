@@ -22,7 +22,8 @@
     <form method="POST" class="post-form">
 		{% csrf_token %}
 		{{ form.as_p }}
-	  <td><button name="id_aluno" value="{{alunosili.pk}}" type="submit" class="save btn btn-default">Aceitar</button>
+	  <td><button name="aceitar" value="{{alunosili.pk}}" type="submit" class="save btn btn-default">Aceitar</button>
+		<td><button name="recusar" value="{{alunosili.pk}}" type="submit" class="save btn btn-default">Recusar</button>
 		</form>
 </tr>
 {% endfor %}
@@ -63,6 +64,7 @@
 {% for aluno in alunos %}
 <tr>
     <td>{{aluno.aluno.nome}}</td>
+		<td><a href="{%url 'delete_aluno' aluno.id %}"><button type="button" class="btn btn-danger">Remover</button></a></td>
 </tr>
 {% endfor %}
    </span>

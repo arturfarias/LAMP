@@ -28,8 +28,11 @@
 		<form method="POST" class="post-form">
 		{% csrf_token %}
 		{{ form.as_p }}
-	  <td><button name="id_turma" value="{{turma.pk}}" type="submit" class="save btn btn-default">Participar</button>
+
+ 			<td><button name="id_turma" value="{{turma.pk}}" type="submit" class="save btn btn-default">Participar</button>
+
 		</form>
+
     </td>
 </tr>
 {% endif %}

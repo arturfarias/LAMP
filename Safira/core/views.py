@@ -9,6 +9,9 @@ from django.contrib.auth.decorators import login_required
 from .forms import RegisterForm, MatriculaForm,DisciplinaForms,Turmaforms
 from .decorators import  is_aluno,is_professor
 from .models import AlunosMatriculados,Aluno,Disciplina,Turma,Professor
+from django.db import IntegrityError
+from django.core.exceptions import  ObjectDoesNotExist
+
 
 def index(request):
     if request.method == 'POST':
@@ -43,6 +46,17 @@ def register(request):
 
 @is_aluno()
 @login_required
+def aluno(request):
+    return redirect(reverse('Aluno_disciplina'))
+
+@is_professor()
+@login_required
+def professor(request):
+    return redirect(reverse('Professor_disciplina'))
+
+
+@is_aluno()
+@login_required
 def Aluno_disciplina(request):
     aluno = Aluno.objects.get(usuario=request.user)
     disciplinafiltro = AlunosMatriculados.objects.filter(aluno_id=aluno,pendencia = False).order_by('turma')
@@ -66,6 +80,7 @@ def All_disciplinas(request):
     aluno = Aluno.objects.get(usuario=request.user)
     lista_disciplinas = Disciplina.objects.all().order_by('nome')
     turmas = Turma.objects.all().order_by('semestre')
+
     paginator = Paginator(lista_disciplinas, 5)
 
     try:
@@ -83,7 +98,10 @@ def All_disciplinas(request):
         form = form.save(commit=False)
         form.aluno = aluno
         form.turma = Turma.objects.get(id=request.POST.get("id_turma"))
-        form.save()
+        try:
+            form.save()
+        except IntegrityError:
+            pass #futuramente colocar uma mansagem de erro
 
     return render(request, "core/disciplinas.html",{'dis':dis,'turmas':turmas})
 
@@ -193,19 +211,6 @@ def delete_turma(request,pk):
     return render(request,"core/deletar_turmas.html",{'object':turma})
 
 def ver_turmas(request, pk):
-    turma = Turma.objects.get(pk=pk)
-    alunosfiltro = AlunosMatriculados.objects.filter(turma = pk,pendencia = False).order_by('turma')
-    paginator = Paginator(alunosfiltro, 10)
-
-    try:
-        page = int(request.GET.get('page', '1'))
-    except ValueError:
-        page = 1
-
-    try:
-        alunos = paginator.page(page)
-    except (EmptyPage, InvalidPage):
-        alunos = paginator.page(paginator.num_pages)
 
 
     alunossolicitacao = AlunosMatriculados.objects.filter(turma = pk,pendencia = True).order_by('turma')
@@ -223,10 +228,45 @@ def ver_turmas(request, pk):
 
 
     if request.method == 'POST':
-        aluno = AlunosMatriculados.objects.get(id=request.POST.get("id_aluno"))
-        form = MatriculaForm(request.POST or None, instance=aluno)
-        form = form.save(commit=False)
-        form.pendencia = False
-        form.save()
+        try:
+            aluno = AlunosMatriculados.objects.get(id=request.POST.get("aceitar"))
+            teste = True
+        except ObjectDoesNotExist:
+            aluno = AlunosMatriculados.objects.get(id=request.POST.get("recusar"))
+            teste = False
+        if teste :
+            form = MatriculaForm(request.POST or None, instance=aluno)
+            form = form.save(commit=False)
+            form.pendencia = False
+            form.save()
+        else:
+            form = MatriculaForm(request.POST or None,instance=aluno)
+            aluno.delete()
+
+
+    turma = Turma.objects.get(pk=pk)
+    alunosfiltro = AlunosMatriculados.objects.filter(turma = pk,pendencia = False).order_by('turma')
+    paginator = Paginator(alunosfiltro, 10)
+
+    try:
+        page = int(request.GET.get('page', '1'))
+    except ValueError:
+        page = 1
+
+    try:
+        alunos = paginator.page(page)
+    except (EmptyPage, InvalidPage):
+        alunos = paginator.page(paginator.num_pages)
 
     return render(request,"core/ver_turmas.html",{'turma':turma,'alunos':alunos,'alunossolis':alunossolis})
+
+@is_professor()
+@login_required
+def delete_Aluno(request,pk):
+    matricula = AlunosMatriculados.objects.get(pk=pk)
+
+    if request.method == 'POST':
+        form = MatriculaForm(request.POST or None,instance=matricula)
+        matricula.delete()
+        return redirect(reverse('professor_turma'))
+    return render(request,"core/deletar_aluno.html",{'matricula':matricula})
