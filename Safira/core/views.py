@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm,PasswordChangeForm
 from django.contrib.auth import login
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
@@ -228,18 +228,14 @@ def ver_turmas(request, pk):
 
 
     if request.method == 'POST':
-        try:
+        if "aceitar" in request.POST:
             aluno = AlunosMatriculados.objects.get(id=request.POST.get("aceitar"))
-            teste = True
-        except ObjectDoesNotExist:
-            aluno = AlunosMatriculados.objects.get(id=request.POST.get("recusar"))
-            teste = False
-        if teste :
             form = MatriculaForm(request.POST or None, instance=aluno)
             form = form.save(commit=False)
             form.pendencia = False
             form.save()
         else:
+            aluno = AlunosMatriculados.objects.get(id=request.POST.get("recusar"))
             form = MatriculaForm(request.POST or None,instance=aluno)
             aluno.delete()
 
@@ -272,12 +268,11 @@ def delete_Aluno(request,pk):
     return render(request,"core/deletar_aluno.html",{'matricula':matricula})
 
 def passwordReset(request):
+    context = {}
     if request.method == 'POST':
         form = ResetForms(request.POST)
         if form.is_valid():
             pass
-
-
     else:
         form = ResetForms()
     return render (request,"core/reset.html",{"form": form})
