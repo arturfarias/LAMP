@@ -6,7 +6,7 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.contrib.auth.decorators import login_required
-from .forms import RegisterForm, MatriculaForm,DisciplinaForms,Turmaforms
+from .forms import RegisterForm, MatriculaForm,DisciplinaForms,Turmaforms,ResetForms
 from .decorators import  is_aluno,is_professor
 from .models import AlunosMatriculados,Aluno,Disciplina,Turma,Professor
 from django.db import IntegrityError
@@ -270,3 +270,14 @@ def delete_Aluno(request,pk):
         matricula.delete()
         return redirect(reverse('professor_turma'))
     return render(request,"core/deletar_aluno.html",{'matricula':matricula})
+
+def passwordReset(request):
+    if request.method == 'POST':
+        form = ResetForms(request.POST)
+        if form.is_valid():
+            pass
+
+
+    else:
+        form = ResetForms()
+    return render (request,"core/reset.html",{"form": form})
