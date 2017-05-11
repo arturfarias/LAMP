@@ -28,8 +28,6 @@ class Aluno(models.Model):
     nome = models.CharField('Nome', max_length=50)
     email = models.EmailField('E-mail')
     matricula = models.CharField('Matricula', max_length=8)
-    turma = models.ManyToManyField('Turma', through='AlunosMatriculados',
-                                   blank=True)
     sobre = models.CharField('Sobre', max_length=120)
 
     def __str__(self):
@@ -50,6 +48,8 @@ class Turma(models.Model):
     professor = models.ForeignKey('Professor', verbose_name="Professor")
     disciplina = models.ForeignKey('Disciplina', verbose_name="Disciplina")
     semestre = models.CharField('Semestre', max_length=7)
+    aluno = models.ManyToManyField('Aluno', through='AlunosMatriculados',
+                                   blank=True)
 
     class Meta:
         unique_together = (("nome", "disciplina", "semestre"),)

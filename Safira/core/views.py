@@ -92,7 +92,7 @@ def All_disciplinas(request):
     TEMPLATE = "core/disciplinas.html"
     aluno = Aluno.objects.get(usuario=request.user)
     lista_disciplinas = Disciplina.objects.all().order_by('nome')
-    turmas = Turma.objects.all().order_by('semestre')
+    turmas = Turma.objects.all().order_by('semestre').exclude(aluno=aluno)
 
     paginator = Paginator(lista_disciplinas, 5)
 
@@ -116,7 +116,9 @@ def All_disciplinas(request):
         except IntegrityError:
             pass  # futuramente colocar uma mansagem de erro
 
-    return render(request, TEMPLATE, {'dis': dis, 'turmas': turmas})
+    context = {'dis': dis, 'turmas': turmas}
+
+    return render(request, TEMPLATE, context)
 
 
 @is_professor()
