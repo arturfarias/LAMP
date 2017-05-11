@@ -1,12 +1,14 @@
 {% extends 'base/base_professor.html' %}
 {% load staticfiles %}
 {% load bootstrap %}
-
 {% block content %}
+
 <form method="POST">
   {% csrf_token %}
   <p>Voce tem certeza que quer deletar a turma  {{object.nome}} de {{object.disciplina}} ?</p>
   <button type="submit" class="btn btn-danger">Tenho certeza</button>
 </form>
+
 <a href="{%url 'professor_turma'%}"><button class="btn btn-success"> Não tenho certeza </button></a>
+
 {% endblock content %}

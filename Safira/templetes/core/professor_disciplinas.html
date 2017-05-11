@@ -1,34 +1,32 @@
 {% extends 'base/base_professor.html' %}
 {% load staticfiles %}
-
 {% block content %}
+
 <a href="{%url 'criar_disciplina'%}"><button type="button" class="btn btn-success">Criar nova </button></a>
 <div class="container">
-	<div class="row">
-		<div class="span5">
-            <table class="table table-striped table-condensed">
-                  <thead>
-                  <tr>
-                      <th>Nome</th>
-                      <th>Descrição</th>
-                      <th></th>
-                  </tr>
-              </thead>
-              <tbody>
-{% for disciplina in disciplinas.object_list %}
-                <tr>
-                    <td>{{disciplina.nome}}</td>
-                    <td>{{disciplina.descricao}}</td>
-                    <td><a href="{%url 'update_disciplina' disciplina.pk %}"><button type="button" class="btn btn-success">Editar</button></a>
-										<a href="{%url 'delete_disciplina' disciplina.id %}"><button type="button" class="btn btn-danger">Excluir</button></a>
-                    </td>
-                </tr>
-{% endfor %}
-
-</tbody>
-</table>
-</div>
-</div>
+  <div class="row">
+    <div class="span5">
+      <table class="table table-striped table-condensed">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Descrição</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for disciplina in disciplinas.object_list %}
+            <tr>
+              <td>{{disciplina.nome}}</td>
+              <td>{{disciplina.descricao}}</td>
+              <td><a href="{%url 'update_disciplina' disciplina.pk %}"><button type="button" class="btn btn-success">Editar</button></a>
+                  <a href="{%url 'delete_disciplina' disciplina.id %}"><button type="button" class="btn btn-danger">Excluir</button></a></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+   </div>
 </div>
 
 <div class="pagination">
@@ -36,18 +34,12 @@
        {% if disciplinas.has_previous %}
            <a href="?page={{ disciplinas.previous_page_number }}"><button type="button" class="btn btn-default"><span class="glyphicon glyphicon-chevron-left">Anterior</span></button></a>
        {% endif %}
-
        <span class="current">
            Página {{ disciplinas.number }} de {{ disciplinas.paginator.num_pages }}.
        </span>
-
        {% if disciplinas.has_next %}
            <a href="?page={{ disciplinas.next_page_number }}"><button type="button" class="btn btn-default">Próxima<span class="glyphicon glyphicon-chevron-right"></span></button></a>
        {% endif %}
    </span>
-</div>
-</div>
-       </section>
-   </div>
 </div>
 {% endblock content %}

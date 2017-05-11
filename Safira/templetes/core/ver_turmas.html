@@ -1,51 +1,48 @@
 {% extends 'base/base_professor.html' %}
 {% load staticfiles %}
 {% block content %}
-<h1>Turma: {{turma.nome}} de {{turma.disciplina}}</h1>
 
+<h1>Turma: {{turma.nome}} de {{turma.disciplina}}</h1>
 <h3>Exercícios</h3>
 <p>Ainda vai ser implementado </p>
-
 <h3>Solicitações</h3>
 
 <div class="container">
-	<div class="row">
-		<div class="span5">
-            <table class="table table-striped table-condensed">
-                  <thead>
-<tr>
-    <th>Nome do aluno</th>
-</tr>
-{% for alunosili in alunossolis %}
-<tr>
-    <td>{{alunosili.aluno.nome}}</td>
-    <form method="POST" class="post-form">
-		{% csrf_token %}
-		{{ form.as_p }}
-	  <td><button name="aceitar" value="{{alunosili.pk}}" type="submit" class="save btn btn-default">Aceitar</button>
-		<td><button name="recusar" value="{{alunosili.pk}}" type="submit" class="save btn btn-default">Recusar</button>
-		</form>
-</tr>
-{% endfor %}
-   </span>
-</div>
-</tbody>
-</table>
-<div class="pagination">
-   <span class="step-links">
-       {% if alunossolis.has_previous %}
-           <a href="?page={{ alunossolis.previous_page_number }}"><button type="button" class="btn btn-default"><span class="glyphicon glyphicon-chevron-left">Anterior</span></button></a>
-       {% endif %}
-
-       <span class="current">
-           Página {{ alunossolis.number }} de {{ alunossolis.paginator.num_pages }}.
-       </span>
-
+  <div class="row">
+    <div class="span5">
+      <table class="table table-striped table-condensed">
+        <thead>
+          <tr>
+            <th>Nome do aluno</th>
+          </tr>
+          {% for alunosili in alunossolis %}
+            <tr>
+              <td>{{alunosili.aluno.nome}}</td>
+              <form method="POST" class="post-form">
+		            {% csrf_token %}
+		            {{ form.as_p }}
+	              <td><button name="aceitar" value="{{alunosili.pk}}" type="submit" class="save btn btn-default">Aceitar</button>
+		            <td><button name="recusar" value="{{alunosili.pk}}" type="submit" class="save btn btn-default">Recusar</button>
+		         </form>
+            </tr>
+          {% endfor %}
+        </span>
+      </div>
+    </tbody>
+  </table>
+  <div class="pagination">
+    <span class="step-links">
+      {% if alunossolis.has_previous %}
+        <a href="?page={{ alunossolis.previous_page_number }}"><button type="button" class="btn btn-default"><span class="glyphicon glyphicon-chevron-left">Anterior</span></button></a>
+      {% endif %}
+      <span class="current">
+          Página {{ alunossolis.number }} de {{ alunossolis.paginator.num_pages }}.
+      </span>
        {% if alunossolis.has_next %}
-           <a href="?page={{ alunossolis.next_page_number }}"><button type="button" class="btn btn-default">Próxima<span class="glyphicon glyphicon-chevron-right"></span></button></a>
+          <a href="?page={{ alunossolis.next_page_number }}"><button type="button" class="btn btn-default">Próxima<span class="glyphicon glyphicon-chevron-right"></span></button></a>
        {% endif %}
-</div>
-</div>
+    </div>
+  </div>
 </div>
 
 

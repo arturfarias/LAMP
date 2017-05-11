@@ -1,10 +1,11 @@
-from django.http.response import Http404
 from django.contrib.auth.decorators import user_passes_test
 from django.core.exceptions import PermissionDenied
 
 __author__ = 'allan'
+
+
 def is_aluno(login_url=None, raise_exception=False):
-    perm='core.view_aluno'
+    perm = 'core.view_aluno'
 
     def check_perms(user):
         if not isinstance(perm, (list, tuple)):
@@ -21,8 +22,9 @@ def is_aluno(login_url=None, raise_exception=False):
         return False
     return user_passes_test(check_perms, login_url=login_url)
 
+
 def is_professor(login_url=None, raise_exception=False):
-    perm='core.view_professor'
+    perm = 'core.view_professor'
 
     def check_perms(user):
         if not isinstance(perm, (list, tuple)):

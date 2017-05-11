@@ -1,40 +1,43 @@
-from django.shortcuts import render,redirect
-from django.contrib.auth.forms import AuthenticationForm,PasswordChangeForm
+from django.shortcuts import render, redirect
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login
-from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.contrib.auth.decorators import login_required
-from .forms import RegisterForm, MatriculaForm,DisciplinaForms,Turmaforms,ResetForms
-from .decorators import  is_aluno,is_professor
-from .models import AlunosMatriculados,Aluno,Disciplina,Turma,Professor
 from django.db import IntegrityError
-from django.core.exceptions import  ObjectDoesNotExist
+
+from .forms import RegisterForm, MatriculaForm, DisciplinaForms, Turmaforms
+from .forms import ResetForms
+from .decorators import is_aluno, is_professor
+from .models import AlunosMatriculados, Aluno, Disciplina, Turma, Professor
 
 
 def index(request):
+    TEMPLATE = "core/index.html"
     if request.method == 'POST':
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
             login(request, form.get_user())
             return HttpResponseRedirect(reverse('home'))
         else:
-            return render(request, "core/index.html", {"form": form})
-    return render(request, "core/index.html",{"form": AuthenticationForm()})
+            return render(request, TEMPLATE, {"form": form})
+
+    return render(request, TEMPLATE, {"form": AuthenticationForm()})
+
 
 @login_required
 def home(request):
     if request.user.is_staff:
-         return HttpResponseRedirect("/admin/")
+        return HttpResponseRedirect("/admin/")
     elif request.user.has_perm('core.view_professor'):
         return redirect(reverse('professor'))
     elif request.user.has_perm('core.view_aluno'):
         return redirect(reverse('aluno'))
 
+
 def register(request):
-#form de cadastro
-    context = {}
+    TEMPLATE = "core/register.html"
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
@@ -42,25 +45,33 @@ def register(request):
             return HttpResponseRedirect(reverse('index'))
     else:
         form = RegisterForm()
-    return render (request,"core/register.html",{"form": form})
+
+    return render(request, TEMPLATE, {"form": form})
+
 
 @is_aluno()
 @login_required
 def aluno(request):
+
     return redirect(reverse('Aluno_disciplina'))
+
 
 @is_professor()
 @login_required
 def professor(request):
+
     return redirect(reverse('Professor_disciplina'))
 
 
 @is_aluno()
 @login_required
 def Aluno_disciplina(request):
+    TEMPLATE = "core/minhas_disciplinas.html"
     aluno = Aluno.objects.get(usuario=request.user)
-    disciplinafiltro = AlunosMatriculados.objects.filter(aluno_id=aluno,pendencia = False).order_by('turma')
-    paginator = Paginator(disciplinafiltro, 10)
+    matriculados = AlunosMatriculados
+    filtro = matriculados.objects.filter(aluno_id=aluno,
+                                         pendencia=False).order_by('turma')
+    paginator = Paginator(filtro, 10)
 
     try:
         page = int(request.GET.get('page', '1'))
@@ -72,11 +83,13 @@ def Aluno_disciplina(request):
     except (EmptyPage, InvalidPage):
         disciplinas = paginator.page(paginator.num_pages)
 
-    return render(request,"core/minhas_disciplinas.html",{'disciplinas':disciplinas})
+    return render(request, TEMPLATE, {'disciplinas': disciplinas})
+
 
 @is_aluno()
 @login_required
 def All_disciplinas(request):
+    TEMPLATE = "core/disciplinas.html"
     aluno = Aluno.objects.get(usuario=request.user)
     lista_disciplinas = Disciplina.objects.all().order_by('nome')
     turmas = Turma.objects.all().order_by('semestre')
@@ -101,15 +114,17 @@ def All_disciplinas(request):
         try:
             form.save()
         except IntegrityError:
-            pass #futuramente colocar uma mansagem de erro
+            pass  # futuramente colocar uma mansagem de erro
 
-    return render(request, "core/disciplinas.html",{'dis':dis,'turmas':turmas})
+    return render(request, TEMPLATE, {'dis': dis, 'turmas': turmas})
+
 
 @is_professor()
 @login_required
 def Professor_disciplina(request):
-    disciplinafiltro = Disciplina.objects.filter(creator=request.user).order_by('nome')
-    paginator = Paginator(disciplinafiltro, 5)
+    TEMPLATE = "core/professor_disciplinas.html"
+    filtro = Disciplina.objects.filter(creator=request.user).order_by('nome')
+    paginator = Paginator(filtro, 5)
 
     try:
         page = int(request.GET.get('page', '1'))
@@ -120,11 +135,14 @@ def Professor_disciplina(request):
         disciplinas = paginator.page(page)
     except (EmptyPage, InvalidPage):
         disciplinas = paginator.page(paginator.num_pages)
-    return render(request,"core/professor_disciplinas.html",{'disciplinas':disciplinas})
+
+    return render(request, TEMPLATE, {'disciplinas': disciplinas})
+
 
 @is_professor()
 @login_required
 def criar_disciplina(request):
+    TEMPLATE = "core/criar_disciplinas.html"
     form = DisciplinaForms(request.POST or None)
 
     if form.is_valid():
@@ -132,11 +150,14 @@ def criar_disciplina(request):
         form.creator = request.user
         form.save()
         return redirect(reverse('Professor_disciplina'))
-    return render(request,"core/criar_disciplinas.html",{'form':form})
+
+    return render(request, TEMPLATE, {'form': form})
+
 
 @is_professor()
 @login_required
-def update_disciplina(request,pk):
+def update_disciplina(request, pk):
+    TEMPLATE = "core/criar_disciplinas.html"
     disciplina = Disciplina.objects.get(pk=pk)
     form = DisciplinaForms(request.POST or None, instance=disciplina)
     if form.is_valid():
@@ -144,22 +165,30 @@ def update_disciplina(request,pk):
         form.creator = request.user
         form.save()
         return redirect(reverse('Professor_disciplina'))
-    return render(request,"core/criar_disciplinas.html",{'object':disciplina,'form':form})
+
+    context = {'object': disciplina,
+               'form': form}
+
+    return render(request, TEMPLATE, context)
+
 
 @is_professor()
 @login_required
-def delete_disciplina(request,pk):
+def delete_disciplina(request, pk):
+    TEMPLATE = "core/deletar_disciplinas.html"
     disciplina = Disciplina.objects.get(pk=pk)
 
     if request.method == 'POST':
-        form = DisciplinaForms(request.POST or None,instance=disciplina)
         disciplina.delete()
         return redirect(reverse('Professor_disciplina'))
-    return render(request,"core/deletar_disciplinas.html",{'object':disciplina})
+
+    return render(request, TEMPLATE, {'object': disciplina})
+
 
 @is_professor()
 @login_required
 def professor_turma(request):
+    TEMPLATE = "core/professor_turmas.html"
     professor = Professor.objects.get(usuario=request.user)
     turmas = Turma.objects.filter(professor_id=professor).order_by('nome')
     paginator = Paginator(turmas, 5)
@@ -173,11 +202,14 @@ def professor_turma(request):
         turmas = paginator.page(page)
     except (EmptyPage, InvalidPage):
         turmas = paginator.page(paginator.num_pages)
-    return render(request,"core/professor_turmas.html",{'turmas':turmas})
+
+    return render(request, TEMPLATE, {'turmas': turmas})
+
 
 @is_professor()
 @login_required
 def criar_turma(request):
+    TEMPLATE = "core/criar_turma.html"
     form = Turmaforms(request.POST or None)
 
     if form.is_valid():
@@ -185,11 +217,14 @@ def criar_turma(request):
         form.professor = Professor.objects.get(usuario=request.user)
         form.save()
         return redirect(reverse('professor_turma'))
-    return render(request,"core/criar_turma.html",{'form':form})
+
+    return render(request, TEMPLATE, {'form': form})
+
 
 @is_professor()
 @login_required
-def update_turma(request,pk):
+def update_turma(request, pk):
+    TEMPLATE = "core/criar_turma.html"
     turma = Turma.objects.get(pk=pk)
     form = Turmaforms(request.POST or None, instance=turma)
     if form.is_valid():
@@ -197,24 +232,30 @@ def update_turma(request,pk):
         form.professor = Professor.objects.get(usuario=request.user)
         form.save()
         return redirect(reverse('professor_turma'))
-    return render(request,"core/criar_turma.html",{'object':turma,'form':form})
+
+    context = {'object': turma,
+               'form': form}
+
+    return render(request, TEMPLATE, context)
+
 
 @is_professor()
 @login_required
-def delete_turma(request,pk):
+def delete_turma(request, pk):
+    TEMPLATE = "core/deletar_turmas.html"
     turma = Turma.objects.get(pk=pk)
 
     if request.method == 'POST':
-        form = Turmaforms(request.POST or None,instance=turma)
         turma.delete()
         return redirect(reverse('professor_turma'))
-    return render(request,"core/deletar_turmas.html",{'object':turma})
+    return render(request, TEMPLATE, {'object': turma})
+
 
 def ver_turmas(request, pk):
-
-
-    alunossolicitacao = AlunosMatriculados.objects.filter(turma = pk,pendencia = True).order_by('turma')
-    paginator = Paginator(alunossolicitacao, 10)
+    TEMPLATE = "core/ver_turmas.html"
+    find = AlunosMatriculados.objects.filter(turma=pk,
+                                             pendencia=True).order_by('turma')
+    paginator = Paginator(find, 10)
 
     try:
         page = int(request.GET.get('page', '1'))
@@ -226,23 +267,25 @@ def ver_turmas(request, pk):
     except (EmptyPage, InvalidPage):
         alunossolis = paginator.page(paginator.num_pages)
 
-
     if request.method == 'POST':
         if "aceitar" in request.POST:
-            aluno = AlunosMatriculados.objects.get(id=request.POST.get("aceitar"))
+            id = request.POST.get("aceitar")
+            aluno = AlunosMatriculados.objects.get(id=id)
             form = MatriculaForm(request.POST or None, instance=aluno)
             form = form.save(commit=False)
             form.pendencia = False
             form.save()
         else:
-            aluno = AlunosMatriculados.objects.get(id=request.POST.get("recusar"))
-            form = MatriculaForm(request.POST or None,instance=aluno)
+            id = request.POST.get("recusar")
+            aluno = AlunosMatriculados.objects.get(id=id)
+            form = MatriculaForm(request.POST or None, instance=aluno)
             aluno.delete()
 
-
     turma = Turma.objects.get(pk=pk)
-    alunosfiltro = AlunosMatriculados.objects.filter(turma = pk,pendencia = False).order_by('turma')
-    paginator = Paginator(alunosfiltro, 10)
+    matriculados = AlunosMatriculados
+    filtro = matriculados.objects.filter(turma=pk,
+                                         pendencia=False).order_by('turma')
+    paginator = Paginator(filtro, 10)
 
     try:
         page = int(request.GET.get('page', '1'))
@@ -254,25 +297,31 @@ def ver_turmas(request, pk):
     except (EmptyPage, InvalidPage):
         alunos = paginator.page(paginator.num_pages)
 
-    return render(request,"core/ver_turmas.html",{'turma':turma,'alunos':alunos,'alunossolis':alunossolis})
+    context = {'turma': turma,
+               'alunos': alunos,
+               'alunossolis': alunossolis}
+
+    return render(request, TEMPLATE, context)
+
 
 @is_professor()
 @login_required
-def delete_Aluno(request,pk):
+def delete_Aluno(request, pk):
+    TEMPLATE = "core/deletar_aluno.html"
     matricula = AlunosMatriculados.objects.get(pk=pk)
 
     if request.method == 'POST':
-        form = MatriculaForm(request.POST or None,instance=matricula)
         matricula.delete()
         return redirect(reverse('professor_turma'))
-    return render(request,"core/deletar_aluno.html",{'matricula':matricula})
+    return render(request, TEMPLATE, {'matricula': matricula})
+
 
 def passwordReset(request):
-    context = {}
+    TEMPLATE = "core/reset.html"
     if request.method == 'POST':
         form = ResetForms(request.POST)
         if form.is_valid():
             pass
     else:
         form = ResetForms()
-    return render (request,"core/reset.html",{"form": form})
+    return render(request, TEMPLATE, {"form": form})
