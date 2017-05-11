@@ -27,8 +27,12 @@
                 <form method="POST" class="post-form">
                   {% csrf_token %}
                   {{ form.as_p }}
+                  {% if turma in matriculados %}
                   <td><button name="id_turma" value="{{turma.pk}}" type="submit" class="save btn btn-default">Participar</button>
-              </form>
+                   {% else%}
+                  <td> Solicitado
+                {% endif %}
+            </form>
                 </td>
               </tr>
               {% endif %}

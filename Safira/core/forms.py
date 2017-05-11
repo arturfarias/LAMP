@@ -29,7 +29,7 @@ class DisciplinaForms(forms.ModelForm):
 class Turmaforms(forms.ModelForm):
     class Meta:
         model = Turma
-        exclude = ['professor']
+        exclude = ['professor', 'aluno']
 
 
 class ResetForms(forms.Form):
