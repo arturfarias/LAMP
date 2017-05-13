@@ -5,6 +5,8 @@ __author__ = 'allan'
 
 
 def is_aluno(login_url=None, raise_exception=False):
+    """ Decorators created to validate student permissions
+    """
     perm = 'core.view_aluno'
 
     def check_perms(user):
@@ -24,6 +26,8 @@ def is_aluno(login_url=None, raise_exception=False):
 
 
 def is_professor(login_url=None, raise_exception=False):
+    """ Decorators created to validate teacher permissions
+    """
     perm = 'core.view_professor'
 
     def check_perms(user):

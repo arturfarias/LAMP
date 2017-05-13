@@ -7,7 +7,8 @@ from django.db.models.signals import post_save
 
 
 class Professor(models.Model):
-
+    """ Class responsible for storing teacher data
+    """
     class Meta:
         permissions = (("view_professor", 'can_view_professor'),)
 
@@ -21,6 +22,8 @@ class Professor(models.Model):
 
 
 class Aluno(models.Model):
+    """ Class responsible for storing student data
+    """
     class Meta:
         permissions = (("view_aluno", 'can_view_aluno'),)
 
@@ -35,6 +38,8 @@ class Aluno(models.Model):
 
 
 class Disciplina(models.Model):
+    """ Class responsible for storing the data related to the disciplines
+    """
     nome = models.CharField('Nome', max_length=50)
     descricao = models.TextField('Descrição')
     creator = models.ForeignKey(User, verbose_name="Criador", blank=True)
@@ -44,6 +49,8 @@ class Disciplina(models.Model):
 
 
 class Turma(models.Model):
+    """ Class responsible for storing class data
+    """
     nome = models.CharField('Nome', max_length=50)
     professor = models.ForeignKey('Professor', verbose_name="Professor")
     disciplina = models.ForeignKey('Disciplina', verbose_name="Disciplina")
@@ -59,6 +66,9 @@ class Turma(models.Model):
 
 
 class AlunosMatriculados(models.Model):
+    """ Class responsible for storing data pertaining to many-to-many
+    relationship between students and classes
+    """
     aluno = models.ForeignKey('Aluno', verbose_name="Aluno")
     turma = models.ForeignKey('Turma', verbose_name="Turma")
     pendencia = models.BooleanField('Falta Aprovação', default=True)
@@ -72,6 +82,8 @@ class AlunosMatriculados(models.Model):
 
 @receiver(pre_save, sender=Aluno)
 def handler_permissao_aluno(sender, instance, **kwargs):
+    """ Whenever a student and created assigns some permissions to the same
+    """
     permission = Permission.objects.get(codename='view_aluno')
     User = instance.usuario
     User.user_permissions.add(permission)
@@ -79,6 +91,8 @@ def handler_permissao_aluno(sender, instance, **kwargs):
 
 @receiver(pre_save, sender=Professor)
 def handler_permissao_professor(sender, instance, **kwargs):
+    """ Whenever a teacher is created assign some permissions to the same
+    """
     permission = Permission.objects.get(codename='view_professor')
     user = instance.usuario
     user.user_permissions.add(permission)
@@ -86,6 +100,9 @@ def handler_permissao_professor(sender, instance, **kwargs):
 
 def cria_user_aluno(sender, instance, created, **kwargs):
     if created and not User.is_staff:
+        """Whenever a user is created, created by the registration form creates
+        a new student instance and assigns that user
+        """
         Aluno.objects.create(usuario=instance, email=instance.email)
 
 post_save.connect(cria_user_aluno, sender=User)
