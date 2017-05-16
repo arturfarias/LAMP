@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm, SetPasswordForm
 from django.contrib.auth import login
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
+from django.contrib.auth.models import User
 
 from .forms import RegisterForm, MatriculaForm, DisciplinaForms, Turmaforms
 from .forms import ResetForms
@@ -372,16 +373,33 @@ def delete_Aluno(request, pk):
     return render(request, TEMPLATE, {'matricula': matricula})
 
 
-def passwordReset(request):
+def validarUser(request):
     """ Displays a form to prove that the student who forgot the password and
     himself, if it is validated leads to a page to define a new password
     IN DEVELOPMENT
     """
-    TEMPLATE = "core/reset.html"
+    TEMPLATE = "core/validar.html"
     if request.method == 'POST':
         form = ResetForms(request.POST)
         if form.is_valid():
-            pass
+            user = User.objects.get(username=form.cleaned_data['user'])
+            login(request, user)
+            return redirect(reverse('passwordReset'))
     else:
         form = ResetForms()
+    return render(request, TEMPLATE, {"form": form})
+
+
+@is_aluno()
+@login_required
+def passwordReset(request):
+    TEMPLATE = "core/reset.html"
+    form = SetPasswordForm(user=request.user, data=request.POST or None)
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('index'))
+        else:
+            form = SetPasswordForm(user=request.user)
+
     return render(request, TEMPLATE, {"form": form})

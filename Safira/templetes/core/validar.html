@@ -1,0 +1,7 @@
+{% load bootstrap %}
+
+<form class="form" method="post">
+  {% csrf_token %} <!-- Tag de segurança do django não a remova /!-->
+  {{ form | bootstrap }} <!-- Tag para gerar o formulario /!-->
+   <button type="submit" >Submeter Dados</button>
+</form>

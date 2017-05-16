@@ -7,6 +7,7 @@ urlpatterns = [
     url(r'safira/$', views.index, name='index'),
     url(r'safira/home/$', views.home, name='home'),
     url(r'register/$', views.register, name='register'),
+    url(r'validar/$', views.validarUser, name='validarUser'),
     url(r'reset/$', views.passwordReset, name='passwordReset'),
     url(r'^sair/$', logout, {'next_page': 'index'}, name='logout'),
     url(r'safira/homeAluno/$', views.aluno, name='aluno'),

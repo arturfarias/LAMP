@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
+
 from .models import AlunosMatriculados, Disciplina, Turma, Aluno
 
 
@@ -63,11 +65,14 @@ class ResetForms(forms.Form):
             user = User.objects.get(username=self.cleaned_data['user'])
         except KeyError:
             raise forms.ValidationError('Nenhum E-mail encontrado')
-        aluno = Aluno.objects.get(usuario=user.id)
-        email = self.cleaned_data['email']
-        if email == aluno.email:
-            return email
-        raise forms.ValidationError('Nenhum E-mail encontrado')
+        try:
+            aluno = Aluno.objects.get(usuario=user.id)
+            email = self.cleaned_data['email']
+            if email == aluno.email:
+                return email
+            raise forms.ValidationError('Nenhum E-mail encontrado')
+        except ObjectDoesNotExist:
+            raise forms.ValidationError('Não e um aluno')
 
     def clean_matricula(self):
         """ Valid if the registration number actually belongs to the informed
@@ -77,8 +82,11 @@ class ResetForms(forms.Form):
             user = User.objects.get(username=self.cleaned_data['user'])
         except KeyError:
             raise forms.ValidationError('Nenhuma matricula encontrada')
-        aluno = Aluno.objects.get(usuario=user.id)
-        matricula = self.cleaned_data['matricula']
-        if matricula == aluno.matricula:
-            return matricula
-        raise forms.ValidationError('Nenhuma matricula encontrada')
+        try:
+            aluno = Aluno.objects.get(usuario=user.id)
+            matricula = self.cleaned_data['matricula']
+            if matricula == aluno.matricula:
+                return matricula
+            raise forms.ValidationError('Nenhuma matricula encontrada')
+        except ObjectDoesNotExist:
+            raise forms.ValidationError('Não e um aluno')

@@ -98,11 +98,10 @@ def handler_permissao_professor(sender, instance, **kwargs):
     user.user_permissions.add(permission)
 
 
+@receiver(post_save, sender=User)
 def cria_user_aluno(sender, instance, created, **kwargs):
-    if created and not User.is_staff:
-        """Whenever a user is created, created by the registration form creates
-        a new student instance and assigns that user
-        """
-        Aluno.objects.create(usuario=instance, email=instance.email)
-
-post_save.connect(cria_user_aluno, sender=User)
+    if created:
+        if instance.is_staff:
+            pass
+        else:
+            Aluno.objects.create(usuario=instance, email=instance.email)
