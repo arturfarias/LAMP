@@ -376,7 +376,6 @@ def delete_Aluno(request, pk):
 def validarUser(request):
     """ Displays a form to prove that the student who forgot the password and
     himself, if it is validated leads to a page to define a new password
-    IN DEVELOPMENT
     """
     TEMPLATE = "core/validar.html"
     if request.method == 'POST':
@@ -393,6 +392,9 @@ def validarUser(request):
 @is_aluno()
 @login_required
 def passwordReset(request):
+    """ Sets a new password for the user (without needing to know the old
+    password)
+    """
     TEMPLATE = "core/reset.html"
     form = SetPasswordForm(user=request.user, data=request.POST or None)
     if request.method == 'POST':

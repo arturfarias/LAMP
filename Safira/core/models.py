@@ -100,6 +100,8 @@ def handler_permissao_professor(sender, instance, **kwargs):
 
 @receiver(post_save, sender=User)
 def cria_user_aluno(sender, instance, created, **kwargs):
+    """ Create a student instance for each registered user
+    """
     if created:
         if instance.is_staff:
             pass
