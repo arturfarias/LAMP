@@ -103,7 +103,6 @@ def cria_user_aluno(sender, instance, created, **kwargs):
     """ Create a student instance for each registered user
     """
     if created:
-        if instance.is_staff:
-            pass
-        else:
+        admin = instance.is_staff
+        if not admin:
             Aluno.objects.create(usuario=instance, email=instance.email)
